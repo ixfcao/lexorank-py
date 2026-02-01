@@ -1,7 +1,7 @@
 # LexoRank Utility Library
 
 lexorank-py is a lightweight, dependency-free Python implementation of the LexoRank algorithm for fractional indexing — enabling efficient drag-and-drop sorting, dynamic list reordering, and insert-anywhere operations without full list rebalancing.
-Perfect for building sortable task lists, kanban boards, script editors, or any UI requiring persistent, stable sort keys. Supports rebalancing (bucket rotation) to handle long-term insertion density.
+Perfect for building sortable task lists, kanban boards, script editors, or any UI requiring persistent, stable sort keys. 
 
 ## Directory Structure
 

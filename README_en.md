@@ -6,19 +6,23 @@ Perfect for building sortable task lists, kanban boards, script editors, or any 
 ## Directory Structure
 
 ```
-lexorank-utils/
-├── lexorank/                 # LexoRank core implementation
-│   ├── __init__.py           # Package initialization file
-│   ├── __main__.py           # CLI tool entry point
-│   ├── demo.py               # Demo script
-│   ├── lexo_decimal.py       # Fixed-point decimal implementation
-│   ├── lexo_integer.py       # Big integer implementation
-│   ├── lexo_rank.py          # LexoRank core implementation
-│   ├── lexo_rank_bucket.py   # Bucket implementation
-│   ├── numeral_systems.py    # Number system definition
-│   └── test_lexorank.py      # Test file
-├── lexorank_key.py           # Business layer API wrapper
-└── README.md                 # Documentation
+py-lexorank/
+├── src/py_lexorank/              # Python import package: py_lexorank
+│   ├── __init__.py
+│   ├── lexorank_key.py           # Business API (recommended)
+│   └── lexorank/                 # LexoRank core (algorithm)
+│       ├── __init__.py
+│       ├── lexo_decimal.py
+│       ├── lexo_integer.py
+│       ├── lexo_rank.py
+│       ├── lexo_rank_bucket.py
+│       └── numeral_systems.py
+├── examples/                     # Examples (repo-only, not shipped in pip package)
+│   └── demo.py
+├── tests/
+│   └── test_lexorank.py
+├── pyproject.toml
+└── README.md
 ```
 
 ## Project Overview
@@ -36,10 +40,10 @@ LexoRank is a sorting algorithm that allows inserting new elements at arbitrary 
 
 ### Basic Installation and Usage
 
-Simply import the [LexoRankKey](file:///Users/fang/Desktop/lab-project-2026/lexorank-untils/lexorank_key.py#L45-L200) class to get started:
+Simply import `LexoRankKey` to get started:
 
 ```python
-from lexorank_key import LexoRankKey
+from py_lexorank import LexoRankKey
 
 # Initialize the first record for an empty list
 first_rank = LexoRankKey.init_for_empty_list()
@@ -87,28 +91,17 @@ new_rank = LexoRankKey.insert_before(first_rank)
 new_rank = LexoRankKey.insert(prev_rank, next_rank)
 ```
 
-### Command Line Tool
+### View API Docs (CLI)
 
-LexoRank provides a command-line tool for development and debugging:
+This project intentionally ships as **API-only** (no CLI), to avoid confusion.
+You can still view API docs from your terminal:
 
 ```bash
-# Get minimum rank
-python -m lexorank min
+# Module docs (includes LexoRankKey and method docstrings)
+python -m pydoc py_lexorank.lexorank_key
 
-# Get middle rank
-python -m lexorank middle
-
-# Get maximum rank
-python -m lexorank max
-
-# Get next rank for specified rank
-python -m lexorank next "0|0i0000:"
-
-# Get previous rank for specified rank
-python -m lexorank prev "0|0i0000:"
-
-# Generate new rank between two ranks
-python -m lexorank between "0|000000:" "0|zzzzzz:"
+# Or view class help from an interactive snippet
+python -c "from py_lexorank import LexoRankKey; help(LexoRankKey)"
 ```
 
 ### Demo Script
@@ -119,72 +112,36 @@ Run the demo script to explore various usage scenarios:
 
 1. Run directly (starts with an empty list and auto-inserts the first item):  
 ```bash
-python lexorank/demo.py
+PYTHONPATH=src python examples/demo.py
 ```
 
 2. Generate a batch of items (starts with an empty list, inserts the first item automatically, then generates X additional ranks in increasing order):  
 ```bash
-python lexorank/demo.py --count 20
+PYTHONPATH=src python examples/demo.py --count 20
 ```   
 
 3. Generate items starting from a specific rank (creates X new ranks in increasing order after the given starting rank):  
    > 💡 Note: The rank contains a | character, which must be quoted in shells like zsh or bash.  
 ```bash
-python lexorank/demo.py --start '0|hzzzzz:' --count 10
+PYTHONPATH=src python examples/demo.py --start '0|hzzzzz:' --count 10
+```
+
+## Tests
+
+From the repo root:
+
+```bash
+PYTHONPATH=src python -m unittest discover -s tests -v
 ```
 
 ## File Details
 
-### lexorank/lexo_rank.py
+Source lives in `src/py_lexorank/`:
 
-This is the core implementation class for LexoRank, providing the main functionality for sort keys:
-
-- **LexoRank Class**: Core sort key class containing bucket and decimal components
-
-### lexorank/lexo_rank_bucket.py
-
-Implements the bucket concept for LexoRank, used to isolate different sorting spaces:
-
-- **LexoRankBucket Class**: Bucket implementation supporting 0/1/2 three buckets
-
-### lexorank/lexo_decimal.py
-
-Implements fixed-point decimal arithmetic for calculating mid-values between two ranks:
-
-### lexorank/lexo_integer.py
-
-Implements big integer arithmetic as the foundation for LexoDecimal:
-
-- **LexoInteger Class**: Big integer implementation, wrapping Python int with number system information
-
-### lexorank/numeral_systems.py
-
-Defines the number system, currently using base36:
-
-- **ILexoNumeralSystem Interface**: Number system protocol
-- **LexoNumeralSystem36 Class**: Base36 number system implementation
-
-### lexorank_key.py
-
-Business layer API wrapper providing string-oriented operation interfaces:
-
-- **LexoRankKey Class**: Business layer entry class, all methods accept and return strings
-
-### lexorank/demo.py
-
-Demo script showing common usage scenarios:
-
-- **Basic Scenario Demos**: Empty lists, appending, inserting in middle, etc.
-- **Batch Generation Tools**: For generating test data
-- **Command Line Parameter Support**: Supporting parameterized runs
-
-### lexorank/test_lexorank.py
-
-Unit test file verifying the correctness of all functionality:
-
-### lexorank/__main__.py
-
-Command-line interface implementation providing development and debugging tools.
+- `src/py_lexorank/lexorank_key.py`: business API (string in/out, recommended)
+- `src/py_lexorank/lexorank/`: core algorithm + CLI
+- `examples/demo.py`: demo / data generator (repo-only)
+- `tests/test_lexorank.py`: unit tests
 
 ## Business Application Scenarios
 
@@ -193,7 +150,7 @@ Command-line interface implementation providing development and debugging tools.
 In project management applications, users frequently need to adjust the order of tasks. Using LexoRank avoids updating the entire list on each reorder:
 
 ```python
-from lexorank_key import LexoRankKey
+from py_lexorank import LexoRankKey
 
 # Create new task and insert into list
 def add_task_after(task_list, target_task_id):
@@ -209,7 +166,7 @@ def add_task_after(task_list, target_task_id):
 In menu editors, users can adjust menu item order through drag-and-drop:
 
 ```python
-from lexorank_key import LexoRankKey
+from py_lexorank import LexoRankKey
 
 # Drag-and-drop sorting: Move item from old_pos to new_pos
 def move_menu_item(item_id, old_pos, new_pos):
@@ -269,6 +226,18 @@ When multiple requests concurrently insert into the same gap, duplicate ranks ma
 - For sorting large amounts of data, periodic defragmentation is beneficial
 
 
+## Installation
+
+Install using pip:
+```bash
+pip install py-lexorank
+```
+
+Or using uv (faster package manager):
+```bash
+uv pip install py-lexorank
+```
+
 ## Testing
 
 Run unit tests to verify functionality:
@@ -281,6 +250,22 @@ Or run test file directly:
 
 ```bash
 python lexorank/test_lexorank.py
+```
+
+## Publishing to PyPI
+
+To publish to PyPI, use the following commands:
+
+Using uv (recommended):
+```bash
+uv build
+uv run twine upload dist/*
+```
+
+Or using traditional tools:
+```bash
+python -m build
+twine upload dist/*
 ```
 
 ## License

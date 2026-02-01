@@ -1,23 +1,10 @@
-"""可直接运行的自测脚本（unittest）。
-
-运行方式（任选其一）：
-- 在 `app/utils` 目录下：`python -m lexorank.test_lexorank`
-- 直接运行文件：`python app/utils/lexorank/test_lexorank.py`
-"""
+"""py-lexorank unit tests (unittest)."""
 
 from __future__ import annotations
 
-import pathlib
-import sys
 import unittest
-
-if __package__ in (None, ""):
-    # 允许用 `python app/utils/lexorank/test_lexorank.py` 直接运行：
-    # 把包的父目录（app/utils）加入到 sys.path，确保能 import lexorank / lexorank_key。
-    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
-
-import lexorank as lx  # noqa: E402
-from lexorank_key import LexoRankKey  # noqa: E402
+import py_lexorank as lx
+from py_lexorank.lexorank_key import LexoRankKey
 
 
 class TestLexoRank(unittest.TestCase):

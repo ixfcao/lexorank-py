@@ -6,19 +6,23 @@ lexorank-py是用于分数索引的lexorank算法的轻量级、无依赖性的P
 ## 目录结构
 
 ```
-lexorank-utils/
-├── lexorank/                 # LexoRank 核心实现
-│   ├── __init__.py           # 包初始化文件
-│   ├── __main__.py           # CLI 工具入口
-│   ├── demo.py               # 演示脚本
-│   ├── lexo_decimal.py       # 定点小数实现
-│   ├── lexo_integer.py       # 大整数实现
-│   ├── lexo_rank.py          # LexoRank 核心实现
-│   ├── lexo_rank_bucket.py   # 分桶实现
-│   ├── numeral_systems.py    # 进制系统定义
-│   └── test_lexorank.py      # 测试文件
-├── lexorank_key.py           # 业务层API封装
-└── README.md                 # 本文档
+py-lexorank/
+├── src/py_lexorank/              # Python import 包：py_lexorank
+│   ├── __init__.py
+│   ├── lexorank_key.py           # 业务层 API（推荐使用）
+│   └── lexorank/                 # LexoRank 核心实现（算法层）
+│       ├── __init__.py
+│       ├── lexo_decimal.py
+│       ├── lexo_integer.py
+│       ├── lexo_rank.py
+│       ├── lexo_rank_bucket.py
+│       └── numeral_systems.py
+├── examples/                     # 示例/造排序数据脚本（不随 pip 包发布）
+│   └── demo.py
+├── tests/                        # 单元测试
+│   └── test_lexorank.py
+├── pyproject.toml
+└── README.md
 ```
 
 ## 项目概述
@@ -36,10 +40,23 @@ LexoRank 是一种排序算法，允许在列表中任意位置插入新元素�
 
 ### 基础安装和使用
 
-直接导入 `LexoRankKey` 类即可开始使用：
+
+## 安装
+
+使用 pip 安装：
+```bash
+pip install py-lexorank
+```
+
+或使用 uv (更快的包管理器)：
+```bash
+uv pip install py-lexorank
+```
+
+推荐直接导入 `LexoRankKey` 类即可开始使用：
 
 ```python
-from lexorank_key import LexoRankKey
+from py_lexorank import LexoRankKey
 
 # 初始化空列表的第一条记录
 first_rank = LexoRankKey.init_for_empty_list()
@@ -87,28 +104,16 @@ new_rank = LexoRankKey.insert_before(first_rank)
 new_rank = LexoRankKey.insert(prev_rank, next_rank)
 ```
 
-### 命令行工具
+### 查看 API 文档（命令行）
 
-LexoRank 提供了命令行工具用于开发和调试：
+本项目不发布任何 CLI（避免与业务 API 混淆）。你可以用命令行查看 API 文档：
 
 ```bash
-# 获取最小 rank
-python -m lexorank min
+# 查看模块文档（包含 LexoRankKey 的说明和方法注释）
+python -m pydoc py_lexorank.lexorank_key
 
-# 获取中间 rank
-python -m lexorank middle
-
-# 获取最大 rank
-python -m lexorank max
-
-# 获取指定 rank 的下一个 rank
-python -m lexorank next "0|0i0000:"
-
-# 获取指定 rank 的上一个 rank
-python -m lexorank prev "0|0i0000:"
-
-# 在两个 rank 之间生成新的 rank
-python -m lexorank between "0|000000:" "0|zzzzzz:"
+# 或在交互式环境查看类帮助
+python -c "from py_lexorank import LexoRankKey; help(LexoRankKey)"
 ```
 
 ### 演示脚本
@@ -117,65 +122,34 @@ python -m lexorank between "0|000000:" "0|zzzzzz:"
 
 1. 直接运行（默认空列表自动插入第一条）
 ```bash
-python lexorank/demo.py
+PYTHONPATH=src python examples/demo.py
 ```
 2. 指定批量生成数量（默认空列表自动插入第一条，根据生成的第一条一次生成 X 个递增 rank）
 ```bash
-python lexorank/demo.py --count 20
+PYTHONPATH=src python examples/demo.py --count 20
 ```
 3. 指定起始 rank（从某个已有 rank 后面开始批量生成X 个递增 rank）
 注意：rank 里有 |，在 zsh 里必须用引号包起来
 ```bash
-python lexorank/demo.py --start '0|hzzzzz:' --count 10
+PYTHONPATH=src python examples/demo.py --start '0|hzzzzz:' --count 10
+```
+
+## 测试
+
+在仓库根目录运行：
+
+```bash
+PYTHONPATH=src python -m unittest discover -s tests -v
 ```
 
 ## 文件详细说明
 
-### lexorank/lexo_rank.py
+源码位于 `src/py_lexorank/`：
 
-这是 LexoRank 的核心实现类，提供了排序键的主要功能：
-
-
-### lexorank/lexo_rank_bucket.py
-
-实现了 LexoRank 的分桶概念，用于隔离不同的排序空间：
-
-
-### lexorank/lexo_decimal.py
-
-实现定点小数运算，用于在两个 rank 之间计算中值：
-
-### lexorank/lexo_integer.py
-
-实现大整数运算，作为 LexoDecimal 的基础：
-
-
-### lexorank/numeral_systems.py
-
-定义进制系统，当前使用 base36：
-
-### lexorank_key.py
-
-业务层 API 封装，提供面向字符串的操作接口：
-
-- **LexoRankKey 类**：业务层入口类，所有方法接受和返回字符串
-
-### lexorank/demo.py
-
-演示脚本，展示常见使用场景：
-
-- **基本场景演示**：空列表、追加、中间插入等
-- **批量生成工具**：用于生成测试数据
-- **命令行参数支持**：支持参数化运行
-
-### lexorank/test_lexorank.py
-
-单元测试文件，验证所有功能的正确性：
-
-
-### lexorank/__main__.py
-
-命令行接口实现，提供开发和调试工具。
+- `src/py_lexorank/lexorank_key.py`：业务层 API（字符串进出，推荐）
+- `src/py_lexorank/lexorank/`：LexoRank 算法核心实现与 CLI
+- `examples/demo.py`：示例/造排序数据脚本（repo-only）
+- `tests/test_lexorank.py`：单元测试
 
 ## 业务场景应用
 
@@ -184,7 +158,7 @@ python lexorank/demo.py --start '0|hzzzzz:' --count 10
 在项目管理应用中，用户经常需要调整任务的顺序。使用 LexoRank 可以避免每次重排都更新整个列表：
 
 ```python
-from lexorank_key import LexoRankKey
+from py_lexorank.lexorank_key import LexoRankKey
 
 # 创建新任务并插入到列表中
 def add_task_after(task_list, target_task_id):

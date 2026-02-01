@@ -1,5 +1,23 @@
-# Byte编译的Python文件
-*__pycache__/
-lexorank/__pycache__/
+# Python
+__pycache__/
 *.py[cod]
 *$py.class
+*.egg-info/
+
+# Virtual env
+.venv/
+venv/
+
+# Build artifacts
+dist/
+build/
+
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Test / tooling
+.pytest_cache/
+.coverage
+htmlcov/

@@ -1,11 +1,14 @@
 """手动调用示例（不走 unittest）。
 
-运行：
-- 支持直接运行：`python app/utils/lexorank/demo.py`
-
-用途：
-- 这是“演示脚本”，用于你在开发阶段快速生成一些 LexoRank 字符串，方便造假数据写入数据库。
+说明：
+- 这是“演示脚本/造假数据工具”，放在包外（repo-only），不随 pip 包安装发布。
 - 注意：rank 字符串里包含 `|`，在 zsh 里运行命令时要用引号包起来，否则会被当作管道符。
+
+运行（推荐，仓库根目录）：
+    PYTHONPATH=src python examples/demo.py --count 20
+
+如果你已经安装到环境（例如 `pip install py-lexorank` 或 `pip install -e .`），也可以直接：
+    python examples/demo.py --count 20
 """
 
 from __future__ import annotations
@@ -15,11 +18,13 @@ import pathlib
 import sys
 
 if __package__ in (None, ""):
-    # 允许用 `python app/utils/lexorank/demo.py` 直接运行：
-    # 把包的父目录（app/utils）加入到 sys.path，确保能 import lexorank_key。
-    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+    # Allow running directly from anywhere, e.g.:
+    #   python examples/demo.py
+    #   (or) cd examples && python demo.py
+    repo_root = pathlib.Path(__file__).resolve().parents[1]
+    sys.path.insert(0, str(repo_root / "src"))
 
-from lexorank_key import LexoRankKey  # noqa: E402
+from py_lexorank.lexorank_key import LexoRankKey  
 
 
 def demo_basic_scenarios() -> None:

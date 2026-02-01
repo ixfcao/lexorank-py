@@ -22,12 +22,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-try:
-    # 正常在项目包内使用：from app.utils.lexorank_key import LexoRankKey
-    from .lexorank.lexo_rank import LexoRank
-except ImportError:  # pragma: no cover
-    # 允许在把 `app/utils` 加入 sys.path 后直接运行/测试：import lexorank_key
-    from lexorank.lexo_rank import LexoRank  # type: ignore[no-redef]
+from .lexorank.lexo_rank import LexoRank
 
 
 class LexoRankKey:

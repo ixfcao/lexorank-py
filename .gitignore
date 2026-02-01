@@ -1,0 +1,4 @@
+# Byte编译的Python文件
+__pycache__/
+*.py[cod]
+*$py.class

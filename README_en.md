@@ -113,16 +113,24 @@ python -m lexorank between "0|000000:" "0|zzzzzz:"
 
 ### Demo Script
 
-Run the demo script to see various usage scenarios:
+Here's the professional and clear English translation suitable for a GitHub README:
 
+Run the demo script to explore various usage scenarios:
+
+1. Run directly (starts with an empty list and auto-inserts the first item):  
 ```bash
 python lexorank/demo.py
 ```
 
-Or generate ranks in batches:
-
+2. Generate a batch of items (starts with an empty list, inserts the first item automatically, then generates X additional ranks in increasing order):  
 ```bash
-python lexorank/demo.py --start "0|hzzzzz:" --count 10
+python lexorank/demo.py --count 20
+```   
+
+3. Generate items starting from a specific rank (creates X new ranks in increasing order after the given starting rank):  
+   > 💡 Note: The rank contains a | character, which must be quoted in shells like zsh or bash.  
+```bash
+python lexorank/demo.py --start '0|hzzzzz:' --count 10
 ```
 
 ## File Details

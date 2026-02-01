@@ -115,14 +115,18 @@ python -m lexorank between "0|000000:" "0|zzzzzz:"
 
 运行演示脚本来查看各种使用场景：
 
+1. 直接运行（默认空列表自动插入第一条）
 ```bash
 python lexorank/demo.py
 ```
-
-或者批量生成 rank：
-
+2. 指定批量生成数量（默认空列表自动插入第一条，根据生成的第一条一次生成 X 个递增 rank）
 ```bash
-python lexorank/demo.py --start "0|hzzzzz:" --count 10
+python lexorank/demo.py --count 20
+```
+3. 指定起始 rank（从某个已有 rank 后面开始批量生成X 个递增 rank）
+注意：rank 里有 |，在 zsh 里必须用引号包起来
+```bash
+python lexorank/demo.py --start '0|hzzzzz:' --count 10
 ```
 
 ## 文件详细说明
